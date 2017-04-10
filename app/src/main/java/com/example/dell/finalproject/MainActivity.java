@@ -9,6 +9,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, View.OnClickListener, AdapterView.OnItemLongClickListener {
 
     private MediaPlayer mPlayer;
-    private int current_Song = 1;
+    private int current_Song = 0;
      public static final int NOTIFICATION_ID = 100;
     private NotificationCompat.Builder mBuilder;
     private NotificationManager mNotifManager;
@@ -80,12 +81,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
     @Override
     protected void onDestroy() {
+
         super.onDestroy();
         if (isFinishing()) {
             finish();
         } else {
-            //It's an orientation change.
+            mPlayer.pause();
+            if (mPlayer == null) {
+                ParametrincNotifications(current_Song);
+                ExecuteSong(current_Song);
+            }
         }
+
+
     }
 
     @Override
@@ -96,6 +104,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         ParametrincNotifications(position);
         this.mNotifManager.notify(MainActivity.NOTIFICATION_ID, this.mBuilder.build());
         ExecuteSong(position);
+
+        Log.e("aaaaaaaaaaa",""+position);
     }
 
     @Override
@@ -110,8 +120,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
             case R.id.Main_Play_Song:
                 if (mPlayer == null){
-                    ParametrincNotifications(1);
-                ExecuteSong(1 );
+                    ParametrincNotifications(0);
+                ExecuteSong(0);
               }else
                 mPlayer.start();
 
@@ -127,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
             case R.id.Main_Preview_Song:
                 if (current_Song-1<0)
-                    current_Song=7;
+                    current_Song=6;
                 ExecuteSong(current_Song - 1);
                 ParametrincNotifications(current_Song-1);
                 this.mNotifManager.notify(MainActivity.NOTIFICATION_ID, this.mBuilder.build());
@@ -142,38 +152,38 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public MediaPlayer changesong(int currentSong) {
 
         MediaPlayer msongo = null;
-        if (currentSong < 1)
-            currentSong = 7;
-        else if (currentSong > 7)
-            currentSong = 1;
+        if (currentSong < 0)
+            currentSong = 6;
+        else if (currentSong > 6)
+            currentSong = 0;
         switch (currentSong) {
-            case 1:
+            case 0:
                 msongo = MediaPlayer.create(this, R.raw.bensoundbrazilsamba);
+                current_Song = 0;
+                break;
+            case 1:
+                msongo = MediaPlayer.create(this, R.raw.bensoundcountryboy);
                 current_Song = 1;
                 break;
             case 2:
-                msongo = MediaPlayer.create(this, R.raw.bensoundcountryboy);
+                msongo = MediaPlayer.create(this, R.raw.bensoundindia);
                 current_Song = 2;
                 break;
             case 3:
-                msongo = MediaPlayer.create(this, R.raw.bensoundindia);
+                msongo = MediaPlayer.create(this, R.raw.bensoundlittleplanet);
                 current_Song = 3;
                 break;
             case 4:
-                msongo = MediaPlayer.create(this, R.raw.bensoundlittleplanet);
+                msongo = MediaPlayer.create(this, R.raw.bensoundpsychedelic);
                 current_Song = 4;
                 break;
             case 5:
-                msongo = MediaPlayer.create(this, R.raw.bensoundpsychedelic);
+                msongo = MediaPlayer.create(this, R.raw.bensoundrelaxing);
                 current_Song = 5;
                 break;
             case 6:
-                msongo = MediaPlayer.create(this, R.raw.bensoundrelaxing);
-                current_Song = 6;
-                break;
-            case 7:
                 msongo = MediaPlayer.create(this, R.raw.bensoundtheelevatorbossanova);
-                current_Song = 7;
+                current_Song = 6;
                 break;
         }
 
